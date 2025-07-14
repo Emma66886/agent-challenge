@@ -1,6 +1,113 @@
-# Nosana Builders Challenge: Agent-101
+# Nosana Builders Challenge: Agent-101 - SolHype Bot Edition
 
 ![Agent-101](./assets/NosanaBuildersChallengeAgents.jpg)
+
+## SolHype Bot Features
+
+This project now includes a complete **SolHype Bot** implementation with the following features:
+
+- 🤖 **Telegram Bot**: AI-powered Solana token analysis via group mentions
+- 🔍 **Token Discovery**: Automated token discovery with Jupiter API integration
+- 📊 **Comprehensive Analysis**: AI-powered token scoring and sentiment analysis
+- 📱 **Telegram Notifications**: Automated alerts for top-performing tokens
+- 🐦 **Twitter Integration**: Automated tweet posting about promising tokens
+- 💾 **Persistent Storage**: Analysis history and change detection
+- 🔧 **Full TypeScript**: Complete type safety and modern development
+
+## Quick Start
+
+### 1. Install Dependencies
+```bash
+pnpm install
+```
+
+### 2. Setup Environment Variables
+Copy `.env.example` to `.env` and configure your API keys:
+```bash
+cp .env.example .env
+```
+
+Required API keys:
+- **OpenAI API Key**: For AI-powered analysis
+- **Telegram Bot Token**: Get from [@BotFather](https://t.me/botfather)
+- **Twitter API Credentials**: For automated posting (optional)
+
+### 3. Run the Applications
+
+**Option A: Mastra Web Interface**
+```bash
+pnpm run dev
+```
+Navigate to `http://localhost:8080` for the web interface.
+
+**Option B: Telegram Bot**
+```bash
+pnpm run dev:telegram
+```
+The bot will listen for Telegram mentions and analyze tokens.
+
+## Bot Usage
+
+### Telegram Bot
+Once running, users can mention your bot in Telegram groups with Solana token addresses:
+```
+@YourBotUsername What do you think about this token: 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU
+```
+
+### Admin Commands
+- `/start_discovery` - Start automated token discovery (5min intervals)
+- `/stop_discovery` - Stop automated token discovery
+- `/discovery_status` - Check discovery status
+- `/start_twitter` - Start Twitter posting (30min intervals)
+- `/stop_twitter` - Stop Twitter posting
+- `/twitter_status` - Check Twitter status
+
+### Response Format
+The bot responds with AI-powered analysis:
+```
+🪙 SolanaToken ($SOL) ✅ Verified
+📊 Volume: $1.2M daily
+🌐 Strong socials: Website + Twitter  
+🟢 No mint authority (limited supply)
+⚠️ Freeze authority present
+
+Overall: Bullish 🚀
+```
+
+## Architecture
+
+The merged codebase includes:
+
+- **SolHype Bot Agent**: Main Telegram bot for token analysis
+- **Token Discovery Agent**: Automated token discovery and ranking
+- **Twitter Posting Agent**: Automated tweet creation and posting
+- **Jupiter API Tools**: Comprehensive token data fetching
+- **File Storage**: Persistent analysis results and change detection
+- **Schedulers**: Automated discovery (5min) and Twitter posting (30min)
+
+## Project Structure
+```
+src/
+├── telegram-bot.ts                    # Telegram bot entry point
+├── services/
+│   ├── token-discovery-scheduler.ts   # Token discovery automation
+│   └── twitter-posting-scheduler.ts   # Twitter posting automation
+├── mastra/
+│   ├── index.ts                       # Mastra configuration
+│   ├── agents/
+│   │   ├── solhype-agent.ts          # Main Telegram bot agent
+│   │   ├── token-discovery-agent.ts  # Token discovery agent
+│   │   └── twitter-posting-agent.ts  # Twitter posting agent
+│   └── tools/
+│       ├── jupiter-tool.ts           # Jupiter API integration
+│       ├── jupiter-recent-tool.ts    # Recent token fetching
+│       ├── file-storage-tool.ts      # File storage operations
+│       ├── telegram-tool.ts          # Telegram utilities
+│       └── twitter-posting-tool.ts   # Twitter API integration
+└── ...
+```
+
+## Original Challenge Information
 
 ## Topic
 

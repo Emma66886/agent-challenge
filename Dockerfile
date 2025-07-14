@@ -28,11 +28,20 @@ RUN pnpm install
 # Copy the rest of the application
 COPY . .
 
-# Build the project
-RUN pnpm run build
+# Build both the project and telegram bot
+RUN pnpm run build && pnpm run build:telegram
+
+# Create data directory for persistent storage
+RUN mkdir -p data
+
+# Expose ports
+EXPOSE 8080
 
 # Override the default entrypoint
 ENTRYPOINT ["/bin/sh", "-c"]
 
 # Start Ollama service and pull the model, then run the app
-CMD ["ollama serve & sleep 5 && ollama pull ${MODEL_NAME_AT_ENDPOINT} && node .mastra/output/index.mjs"]
+# Use APP_MODE environment variable to control which mode to run
+# APP_MODE=web (default) - runs Mastra web interface
+# APP_MODE=telegram - runs Telegram bot
+CMD ["ollama serve & sleep 5 && ollama pull ${MODEL_NAME_AT_ENDPOINT} && if [ \"$APP_MODE\" = \"telegram\" ]; then node dist/telegram-bot.js; else node .mastra/output/index.mjs; fi"]

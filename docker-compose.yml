@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Web interface mode
+  solhype-web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_MODE=web
+      - API_BASE_URL=http://127.0.0.1:11434/api
+      - MODEL_NAME_AT_ENDPOINT=qwen2.5:1.5b
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    profiles:
+      - web
+    restart: unless-stopped
+
+  # Telegram bot mode
+  solhype-telegram:
+    build: .
+    environment:
+      - APP_MODE=telegram
+      - API_BASE_URL=http://127.0.0.1:11434/api
+      - MODEL_NAME_AT_ENDPOINT=qwen2.5:1.5b
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    profiles:
+      - telegram
+    restart: unless-stopped
+
+  # Combined mode (both web and telegram)
+  solhype-combined:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_MODE=combined
+      - API_BASE_URL=http://127.0.0.1:11434/api
+      - MODEL_NAME_AT_ENDPOINT=qwen2.5:1.5b
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    profiles:
+      - combined
+    restart: unless-stopped
+    command: >
+      sh -c "ollama serve & 
+             sleep 5 && 
+             ollama pull qwen2.5:1.5b && 
+             node dist/telegram-bot.js & 
+             node .mastra/output/index.mjs"

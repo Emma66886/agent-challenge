@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "main": ".mastra/output/index.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node test-system.js",
+    "test:jupiter": "node test-jupiter.js",
     "deploy:agent": "nosana job post --file ./nos_job_def/nosana_mastra.json --market nvidia-3090 --timeout 30",
     "deploy:qwen": "nosana job post --file ./nos_job_def/qwen_nos_jb.json --market nvidia-3090 --timeout 30",
     "dev": "mastra dev",
+    "dev:telegram": "ts-node src/telegram-bot.ts",
     "build": "mastra build",
+    "build:telegram": "tsc",
     "start": "mastra start",
+    "start:telegram": "node dist/telegram-bot.js",
+    "watch": "tsc --watch",
     "lint": "biome lint ./src",
     "format": "biome format ./src/** --write",
     "check": "biome check ./src"
@@ -27,7 +32,10 @@
     "@mastra/libsql": "^0.10.2",
     "@mastra/loggers": "^0.10.2",
     "@mastra/memory": "^0.10.3",
+    "axios": "latest",
     "dotenv": "^16.5.0",
+    "node-telegram-bot-api": "^0.66.0",
+    "oauth-1.0a": "^2.2.6",
     "ollama-ai-provider": "^1.2.0",
     "zod": "^3.25.67"
   },
@@ -35,7 +43,9 @@
     "@biomejs/biome": "2.0.4",
     "@nosana/cli": "^1.0.52",
     "@types/node": "^24.0.3",
+    "@types/node-telegram-bot-api": "^0.64.9",
     "mastra": "^0.10.5",
+    "ts-node": "latest",
     "typescript": "^5.8.3"
   }
 }
