@@ -1,57 +1,54 @@
 version: '3.8'
 
 services:
-  # Web interface mode
-  solhype-web:
+  # Coin Chat Agent - Mastra web interface
+  coin-chat-agent:
     build: .
     ports:
       - "8080:8080"
     environment:
-      - APP_MODE=web
+      - NODE_ENV=production
       - API_BASE_URL=http://127.0.0.1:11434/api
       - MODEL_NAME_AT_ENDPOINT=qwen2.5:1.5b
     env_file:
       - .env
     volumes:
       - ./data:/app/data
+      - mastra-db:/app/mastra.db
     profiles:
       - web
+      - mastra
+      - default
     restart: unless-stopped
+    command: ["npm", "start"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
-  # Telegram bot mode
-  solhype-telegram:
-    build: .
-    environment:
-      - APP_MODE=telegram
-      - API_BASE_URL=http://127.0.0.1:11434/api
-      - MODEL_NAME_AT_ENDPOINT=qwen2.5:1.5b
-    env_file:
-      - .env
-    volumes:
-      - ./data:/app/data
-    profiles:
-      - telegram
-    restart: unless-stopped
-
-  # Combined mode (both web and telegram)
-  solhype-combined:
-    build: .
+  # Ollama LLM Service (for local development)
+  ollama:
+    image: ollama/ollama:latest
     ports:
-      - "8080:8080"
+      - "11434:11434"
     environment:
-      - APP_MODE=combined
-      - API_BASE_URL=http://127.0.0.1:11434/api
-      - MODEL_NAME_AT_ENDPOINT=qwen2.5:1.5b
-    env_file:
-      - .env
+      - OLLAMA_MODELS=/root/.ollama/models
     volumes:
-      - ./data:/app/data
+      - ollama-data:/root/.ollama
     profiles:
-      - combined
+      - ollama
+      - local-llm
     restart: unless-stopped
     command: >
       sh -c "ollama serve & 
-             sleep 5 && 
+             sleep 10 && 
              ollama pull qwen2.5:1.5b && 
-             node dist/telegram-bot.js & 
-             node .mastra/output/index.mjs"
+             tail -f /dev/null"
+
+volumes:
+  mastra-db:
+    driver: local
+  ollama-data:
+    driver: local

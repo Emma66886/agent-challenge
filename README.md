@@ -1,111 +1,343 @@
-# Nosana Builders Challenge: Agent-101 - SolHype Bot Edition
+# Nosana Builders Challenge: Agent-101 - Coin Chat Agent
 
 ![Agent-101](./assets/NosanaBuildersChallengeAgents.jpg)
 
-## SolHype Bot Features
+## Overview
 
-This project now includes a complete **SolHype Bot** implementation with the following features:
+This project implements a sophisticated **Coin Chat Agent** built with the Mastra framework for the Nosana Builders Challenge. The agent provides advanced Solana token analysis capabilities with memory-enabled conversations, making it perfect for discovering and analyzing cryptocurrency opportunities.
 
-- 🤖 **Telegram Bot**: AI-powered Solana token analysis via group mentions
-- 🔍 **Token Discovery**: Automated token discovery with Jupiter API integration
-- 📊 **Comprehensive Analysis**: AI-powered token scoring and sentiment analysis
-- 📱 **Telegram Notifications**: Automated alerts for top-performing tokens
-- 🐦 **Twitter Integration**: Automated tweet posting about promising tokens
-- 💾 **Persistent Storage**: Analysis history and change detection
-- 🔧 **Full TypeScript**: Complete type safety and modern development
+## 🤖 Current Agent: Coin Chat Agent
 
-## Quick Start
+### Core Features
+- 🤖 **Conversational AI**: Memory-enabled chat agent for natural token analysis discussions
+- 🔍 **Token Analysis**: Comprehensive Solana token evaluation using Jupiter API
+- 📊 **Enhanced Scoring**: 0-105 point scoring system with detailed breakdown
+- 💾 **Persistent Memory**: LibSQLStore integration for conversation continuity
+- 🎯 **Multi-Modal Interface**: Web-based chat interface accessible via Mastra playground
+- 🔧 **Full TypeScript**: Complete type safety with Zod validation
 
-### 1. Install Dependencies
+### Agent Architecture
+
+The Coin Chat Agent provides three specialized tools:
+
+#### 1. `coinAnalysisTool`
+- **Purpose**: Detailed token potential analysis with comprehensive scoring
+- **Input**: Solana token mint address
+- **Output**: 0-105 point score, sentiment (bullish/neutral/bearish), risk assessment, key factors
+- **Features**: Organic score verification, holder analysis, suspicious token detection
+
+#### 2. `bestCoinsTool`
+- **Purpose**: Discovery of top-performing tokens from recent market data
+- **Input**: Optional limit parameter
+- **Output**: Ranked list of best-performing tokens with scores and metrics
+- **Features**: Multi-factor scoring, performance analysis, volume assessment
+
+#### 3. `coinChatTool`
+- **Purpose**: Conversational token information and detailed Q&A
+- **Input**: Token mint address
+- **Output**: Comprehensive token information in conversational format
+- **Features**: Technical details, market data, tokenomics analysis
+
+### Memory System
+- **Persistent Storage**: LibSQLStore with SQLite database
+- **Conversation History**: Remembers previous token analyses
+- **User Preferences**: Tracks risk tolerance and investment interests
+- **Comparative Analysis**: Compares new tokens with previously analyzed ones
+- **Session Continuity**: Maintains context across multiple conversations
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 20.9.0 or higher
+- pnpm (recommended) or npm
+- OpenAI API key
+- Local Ollama installation (optional, for local LLM)
+
+### 1. Installation
+
 ```bash
+# Clone the repository
+git clone <your-fork-url>
+cd agent-challenge
+
+# Install dependencies
 pnpm install
 ```
 
-### 2. Setup Environment Variables
-Copy `.env.example` to `.env` and configure your API keys:
+### 2. Environment Setup
+
+Copy `.env.example` to `.env` and configure:
+
 ```bash
 cp .env.example .env
 ```
 
-Required API keys:
-- **OpenAI API Key**: For AI-powered analysis
-- **Telegram Bot Token**: Get from [@BotFather](https://t.me/botfather)
-- **Twitter API Credentials**: For automated posting (optional)
+Required environment variables:
+```env
+# OpenAI API (required for AI analysis)
+OPENAI_API_KEY=your_openai_api_key
 
-### 3. Run the Applications
+# LLM Configuration (required)
+API_BASE_URL=http://127.0.0.1:11434/api
+MODEL_NAME_AT_ENDPOINT=qwen2.5:1.5b
 
-**Option A: Mastra Web Interface**
+# Mastra Database (optional, uses default if not set)
+MASTRA_DB_URL=file:../mastra.db
+```
+
+### 3. Local Development
+
 ```bash
+# Start the Coin Chat Agent
 pnpm run dev
-```
-Navigate to `http://localhost:8080` for the web interface.
 
-**Option B: Telegram Bot**
+# Access the agent at http://localhost:8080
+```
+
+### 4. Docker Deployment
+
 ```bash
-pnpm run dev:telegram
-```
-The bot will listen for Telegram mentions and analyze tokens.
+# Build and run with Docker Compose
+docker-compose up -d
 
-## Bot Usage
-
-### Telegram Bot
-Once running, users can mention your bot in Telegram groups with Solana token addresses:
-```
-@YourBotUsername What do you think about this token: 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU
+# Or build manually
+docker build -t coin-chat-agent .
+docker run -p 8080:8080 --env-file .env coin-chat-agent
 ```
 
-### Admin Commands
-- `/start_discovery` - Start automated token discovery (5min intervals)
-- `/stop_discovery` - Stop automated token discovery
-- `/discovery_status` - Check discovery status
-- `/start_twitter` - Start Twitter posting (30min intervals)
-- `/stop_twitter` - Stop Twitter posting
-- `/twitter_status` - Check Twitter status
+## 💬 Usage Examples
 
-### Response Format
-The bot responds with AI-powered analysis:
+### Web Interface
+Access the interactive chat at `http://localhost:8080` and try:
+
+**Token Analysis:**
 ```
-🪙 SolanaToken ($SOL) ✅ Verified
-📊 Volume: $1.2M daily
-🌐 Strong socials: Website + Twitter  
-🟢 No mint authority (limited supply)
+Analyze this token: So11111111111111111111111111111111111111112
+```
+
+**Best Coins Discovery:**
+```
+What are the best performing coins right now?
+```
+
+**Conversational Analysis:**
+```
+Tell me about the tokenomics of BONK token
+```
+
+### Example Response
+```
+🪙 Wrapped SOL ($WSOL) Analysis
+
+📊 Potential Score: 85/105 (BULLISH)
+🎯 Risk Level: LOW
+
+Key Factors:
+✅ High organic score (verified)
+🌐 Strong social presence (website + Twitter)
+📊 Good trading volume ($1.2M daily)
+🔒 Mint authority disabled
 ⚠️ Freeze authority present
 
-Overall: Bullish 🚀
+💡 Analysis: Strong fundamentals with good community 
+backing and healthy trading activity. Consider for 
+medium-term holding with proper risk management.
+
+Mint Address: So11111111111111111111111111111111111111112
 ```
 
-## Architecture
+## 🛠 Development
 
-The merged codebase includes:
-
-- **SolHype Bot Agent**: Main Telegram bot for token analysis
-- **Token Discovery Agent**: Automated token discovery and ranking
-- **Twitter Posting Agent**: Automated tweet creation and posting
-- **Jupiter API Tools**: Comprehensive token data fetching
-- **File Storage**: Persistent analysis results and change detection
-- **Schedulers**: Automated discovery (5min) and Twitter posting (30min)
-
-## Project Structure
+### Project Structure
 ```
 src/
-├── telegram-bot.ts                    # Telegram bot entry point
-├── services/
-│   ├── token-discovery-scheduler.ts   # Token discovery automation
-│   └── twitter-posting-scheduler.ts   # Twitter posting automation
 ├── mastra/
-│   ├── index.ts                       # Mastra configuration
-│   ├── agents/
-│   │   ├── solhype-agent.ts          # Main Telegram bot agent
-│   │   ├── token-discovery-agent.ts  # Token discovery agent
-│   │   └── twitter-posting-agent.ts  # Twitter posting agent
-│   └── tools/
-│       ├── jupiter-tool.ts           # Jupiter API integration
-│       ├── jupiter-recent-tool.ts    # Recent token fetching
-│       ├── file-storage-tool.ts      # File storage operations
-│       ├── telegram-tool.ts          # Telegram utilities
-│       └── twitter-posting-tool.ts   # Twitter API integration
-└── ...
+│   ├── index.ts                           # Mastra configuration
+│   ├── config.ts                          # Model and API configuration
+│   └── agents/
+│       └── coin-chat-agent/
+│           ├── coin-chat-agent.ts         # Main agent definition
+│           └── coin-chat-tool.ts          # Specialized analysis tools
 ```
+
+### Available Scripts
+```bash
+# Development
+pnpm run dev              # Start development server
+pnpm run build            # Build for production
+pnpm start                # Start production server
+
+# Testing
+pnpm test                 # Run test suite
+pnpm test:jupiter         # Test Jupiter API integration
+pnpm test:coin-chat       # Test Coin Chat Agent specifically
+
+# Deployment
+pnpm run deploy:agent     # Deploy to Nosana
+pnpm run deploy:qwen      # Deploy with Qwen model
+
+# Code Quality
+pnpm run lint             # Lint code
+pnpm run format           # Format code
+pnpm run check            # Run all checks
+```
+
+### Adding New Features
+
+1. **Extend Agent Tools**: Add new functions to `coin-chat-tool.ts`
+2. **Update Instructions**: Modify agent behavior in `coin-chat-agent.ts`
+3. **Test Locally**: Use `pnpm run dev` to test changes
+4. **Deploy**: Build and deploy updated version
+
+## 🚀 Nosana Deployment
+
+### Docker Container
+
+```bash
+# Build and tag for deployment
+docker build -t yourusername/coin-chat-agent:latest .
+
+# Push to registry
+docker push yourusername/coin-chat-agent:latest
+```
+
+### Job Definition
+
+Update `nos_job_def/nosana_mastra.json`:
+
+```json
+{
+  "image": "docker.io/yourusername/coin-chat-agent:latest",
+  "env": {
+    "OPENAI_API_KEY": "your_openai_key",
+    "API_BASE_URL": "http://127.0.0.1:11434/api",
+    "MODEL_NAME_AT_ENDPOINT": "qwen2.5:1.5b",
+    "NODE_ENV": "production"
+  }
+}
+```
+
+### Deploy with Nosana CLI
+
+```bash
+# Deploy to Nosana
+nosana job post --file nos_job_def/nosana_mastra.json --market nvidia-3090 --timeout 30
+```
+
+## 🏗️ Technical Implementation
+
+### Agent Design Pattern
+- **Memory-First Architecture**: Persistent conversation history for personalized analysis
+- **Tool-Based Approach**: Modular tools for different analysis types
+- **Jupiter API Integration**: Real-time Solana token data
+- **Comprehensive Scoring**: Multi-factor analysis with 0-105 point system
+
+### Key Technologies
+- **Mastra Framework**: Agent orchestration and memory management
+- **Jupiter API**: Solana token data and market information
+- **LibSQLStore**: Persistent memory storage
+- **OpenAI GPT-4**: Natural language processing and analysis
+- **TypeScript + Zod**: Type safety and validation
+
+### Performance Features
+- **Memory Caching**: Persistent conversation context
+- **API Optimization**: Efficient Jupiter API calls
+- **Error Handling**: Robust error recovery and user feedback
+- **Health Checks**: Service monitoring and reliability
+
+## 📊 Agent Capabilities
+
+### Analysis Metrics
+- **Potential Score**: 0-105 point comprehensive rating
+- **Risk Assessment**: Low/Medium/High risk categorization
+- **Sentiment Analysis**: Bullish/Neutral/Bearish outlook
+- **Factor Analysis**: Detailed breakdown of positive/negative elements
+
+### Data Sources
+- **Jupiter API**: Real-time market data, price, volume
+- **Token Metadata**: Name, symbol, social links
+- **Holder Analysis**: Distribution and concentration metrics
+- **Authority Analysis**: Mint and freeze authority status
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **Agent Not Responding**
+   ```bash
+   # Check agent registration
+   grep -r "coinChatAgent" src/mastra/
+   
+   # Verify memory database
+   ls -la mastra.db
+   ```
+
+2. **API Errors**
+   ```bash
+   # Test Jupiter API connectivity
+   pnpm test:jupiter
+   
+   # Verify OpenAI API key
+   echo $OPENAI_API_KEY
+   ```
+
+3. **Memory Issues**
+   ```bash
+   # Check database permissions
+   chmod 664 mastra.db
+   
+   # Clear and rebuild
+   rm -rf .mastra node_modules && pnpm install
+   ```
+
+## 📈 Future Enhancements
+
+### Planned Features
+- **Portfolio Tracking**: Multi-token portfolio analysis
+- **Alert System**: Price and score change notifications
+- **Social Sentiment**: Twitter and community sentiment analysis
+- **Historical Analysis**: Token performance over time
+- **Risk Management**: Advanced risk assessment tools
+
+### Extension Ideas
+- **DeFi Integration**: Liquidity pool and farming analysis
+- **NFT Analysis**: NFT collection evaluation tools
+- **Cross-Chain**: Multi-blockchain token analysis
+- **AI Trading**: Automated trading strategy suggestions
+
+## 📋 Challenge Requirements
+
+### ✅ Completed Requirements
+- [x] **Custom Agent**: Coin Chat Agent with memory capabilities
+- [x] **Tool Implementation**: Three specialized analysis tools
+- [x] **Docker Container**: Production-ready containerization
+- [x] **Documentation**: Comprehensive setup and usage guides
+- [x] **Nosana Deployment**: Ready for network deployment
+- [x] **Memory Integration**: Persistent conversation history
+- [x] **Real-world Application**: Practical cryptocurrency analysis tool
+
+### 🎯 Innovation Highlights
+- **Memory-Enhanced Analysis**: First agent to remember user preferences and analysis history
+- **Comprehensive Scoring**: Advanced 0-105 point evaluation system
+- **Multi-Tool Architecture**: Specialized tools for different analysis needs
+- **Real-time Data**: Live market data integration with Jupiter API
+- **User Experience**: Conversational interface with emoji-rich responses
+
+## 📞 Support & Resources
+
+- **Nosana Discord**: [Join for technical support](https://nosana.com/discord)
+- **Mastra Documentation**: [mastra.ai/docs](https://mastra.ai/docs)
+- **Jupiter API**: [station.jup.ag/docs/apis](https://station.jup.ag/docs/apis)
+- **Project Repository**: [GitHub Repository](https://github.com/nosana-ai/agent-challenge)
+
+## 📄 License
+
+This project is part of the Nosana Builders Challenge and follows the challenge guidelines and terms.
+
+---
+
+**Built for the Nosana Builders Challenge 2025**  
+*Demonstrating advanced AI agent capabilities with real-world cryptocurrency analysis applications*
 
 ## Original Challenge Information
 

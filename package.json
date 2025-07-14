@@ -5,6 +5,7 @@
   "scripts": {
     "test": "node test-system.js",
     "test:jupiter": "node test-jupiter.js",
+    "test:coin-chat": "node test-coin-chat-agent.js",
     "deploy:agent": "nosana job post --file ./nos_job_def/nosana_mastra.json --market nvidia-3090 --timeout 30",
     "deploy:qwen": "nosana job post --file ./nos_job_def/qwen_nos_jb.json --market nvidia-3090 --timeout 30",
     "dev": "mastra dev",
